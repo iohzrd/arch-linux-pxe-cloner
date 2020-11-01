@@ -60,34 +60,9 @@ systemctl enable iptables
 systemctl restart iptables
 
 # configure eth0
-echo """[connection]
-id=eth0
-uuid=585646a7-65f1-47ed-aad3-0b1eceac10dd
-type=ethernet
-interface-name=eth0
-permissions=
-
-[ethernet]
-mac-address-blacklist=
-
-[ipv4]
-address1=192.168.0.1/24
-dns=
-dns-search=
-method=manual
-route-metric=200
-never-default=true
-
-[ipv6]
-addr-gen-mode=stable-privacy
-dns-search=
-method=disabled
-never-default=true
-
-[proxy]
-""" > /etc/NetworkManager/system-connections/eth0.nmconnection
 systemctl enable NetworkManager
 systemctl restart NetworkManager
+nmcli c add type ethernet con-name eth0 ifname eth0 autoconnect yes ipv4.method manual ipv4.addresses 192.168.0.1/24 ipv4.route-metric 200 ipv4.never-default true ipv6.method disabled
 nmcli c up eth0
 
 # configure/start dnsmasq dhcp and tftp server
