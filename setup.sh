@@ -1,9 +1,9 @@
 ###############################################################################
-# archlinux PXE cloner system 
+# archlinux / clonezilla PXE system setup
 ###############################################################################
 
 # install dependencies
-pacman -S dnsmasq syslinux unzip
+pacman -S dnsmasq networkmanager syslinux unzip
 
 # prepare /srv/tftp diretory
 mkdir /srv/tftp
@@ -65,6 +65,7 @@ never-default=true
 
 [proxy]
 """ > /etc/NetworkManager/system-connections/eth0.nmconnection
+systemctl enable NetworkManager
 systemctl restart NetworkManager
 nmcli c up eth0
 
