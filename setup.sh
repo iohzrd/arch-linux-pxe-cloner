@@ -69,7 +69,7 @@ systemctl restart iptables
 echo """# Listen only to the specified interface
 interface=eth0
 bind-interfaces
-listen-address=::1,127.0.0.1,192.168.0.1
+listen-address=192.168.0.1
 server=1.1.1.1
 server=8.8.8.8
 
