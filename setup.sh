@@ -3,7 +3,7 @@
 ###############################################################################
 
 # install dependencies
-pacman -S dnsmasq networkmanager syslinux unzip
+pacman -S dnsmasq iptables networkmanager syslinux unzip
 
 # prepare /srv/tftp diretory
 mkdir /srv/tftp
@@ -38,6 +38,27 @@ touch /etc/udev/rules.d/80-net-setup-link.rules
 echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/30-ipforward.conf
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
+# configure/start iptables
+echo """*filter
+:INPUT ACCEPT [6:687]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [1:32]
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -o wlan0 -j ACCEPT
+COMMIT
+
+*nat
+:PREROUTING ACCEPT [1:242]
+:INPUT ACCEPT [1:242]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
+-A POSTROUTING -o wlan0 -j MASQUERADE
+COMMIT
+""" > /etc/iptables/iptables.rules
+systemctl enable iptables
+systemctl restart iptables
+
 # configure eth0
 echo """[connection]
 id=eth0
@@ -68,27 +89,6 @@ never-default=true
 systemctl enable NetworkManager
 systemctl restart NetworkManager
 nmcli c up eth0
-
-# configure/start iptables
-echo """*filter
-:INPUT ACCEPT [6:687]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [1:32]
--A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -i eth0 -o wlan0 -j ACCEPT
-COMMIT
-
-*nat
-:PREROUTING ACCEPT [1:242]
-:INPUT ACCEPT [1:242]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
--A POSTROUTING -o wlan0 -j MASQUERADE
-COMMIT
-""" > /etc/iptables/iptables.rules
-systemctl enable iptables
-systemctl restart iptables
 
 # configure/start dnsmasq dhcp and tftp server
 echo """# Listen only to the specified interface
