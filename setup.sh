@@ -38,6 +38,12 @@ touch /etc/udev/rules.d/80-net-setup-link.rules
 echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/30-ipforward.conf
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
+# configure eth0
+systemctl enable NetworkManager
+systemctl restart NetworkManager
+nmcli c add type ethernet con-name eth0 ifname eth0 autoconnect yes ipv4.method manual ipv4.addresses 192.168.0.1/24 ipv4.route-metric 200 ipv4.never-default true ipv6.method disabled
+nmcli c up eth0
+
 # configure/start iptables
 echo """*filter
 :INPUT ACCEPT [6:687]
@@ -58,12 +64,6 @@ COMMIT
 """ > /etc/iptables/iptables.rules
 systemctl enable iptables
 systemctl restart iptables
-
-# configure eth0
-systemctl enable NetworkManager
-systemctl restart NetworkManager
-nmcli c add type ethernet con-name eth0 ifname eth0 autoconnect yes ipv4.method manual ipv4.addresses 192.168.0.1/24 ipv4.route-metric 200 ipv4.never-default true ipv6.method disabled
-nmcli c up eth0
 
 # configure/start dnsmasq dhcp and tftp server
 echo """# Listen only to the specified interface
