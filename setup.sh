@@ -3,7 +3,15 @@
 ###############################################################################
 
 # install dependencies
-pacman -S dnsmasq iptables networkmanager syslinux unzip
+pacman -S dnsmasq iptables networkmanager openssh syslinux unzip
+
+# enable sshd for saving/restoring images of ssh
+systemctl enable sshd
+systemctl restart sshd
+
+# make directory for imaging ssh
+mkdir /home/partimag
+chmod 777 /home/partimag
 
 # prepare /srv/tftp and /srv/tftp/pxelinux.cfg/ diretories
 mkdir -p /srv/tftp/pxelinux.cfg/
