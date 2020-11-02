@@ -5,8 +5,8 @@
 # install dependencies
 pacman -S dnsmasq iptables networkmanager syslinux unzip
 
-# prepare /srv/tftp diretory
-mkdir /srv/tftp
+# prepare /srv/tftp and /srv/tftp/pxelinux.cfg/ diretories
+mkdir -p /srv/tftp/pxelinux.cfg/
 
 # copy syslinux dependencies into /srv/tftp/
 cp /usr/lib/syslinux/efi64/syslinux.efi /srv/tftp/
@@ -22,7 +22,6 @@ sudo cp live/* /srv/tftp/
 rm -rf clonezilla-live-2.6.7-28-amd64.zip live/
 
 # create a default config for PXELINUX
-mkdir /srv/tftp/pxelinux.cfg/
 echo """DEFAULT Clonezilla-live
 
 LABEL Clonezilla-live
