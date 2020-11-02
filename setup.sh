@@ -75,7 +75,7 @@ server=192.168.0.1
 dhcp-option=3,0.0.0.0
 
 # Set DNS servers to announce
-dhcp-option=6,8.8.8.8
+dhcp-option=6,1.1.1.1,8.8.8.8
 
 # Don't function as dns server
 port=0
