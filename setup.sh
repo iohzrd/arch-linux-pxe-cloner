@@ -104,4 +104,12 @@ dhcp-boot=tag:efi-x86_64,syslinux.efi
 log-dhcp
 """ > /etc/dnsmasq.conf
 systemctl enable dnsmasq
+mkdir -p /etc/systemd/system/dnsmasq.service.d/
+echo """[Unit]
+StartLimitInterval=0
+
+[Service]
+Restart=always
+RestartSec=15
+""" > /etc/systemd/system/dnsmasq.service.d/override.conf
 systemctl restart dnsmasq
